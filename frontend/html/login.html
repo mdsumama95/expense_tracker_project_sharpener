@@ -6,6 +6,22 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>hello ji</h1>
+    <form onsubmit="login(event)">
+    
+        <label>Enter your Email</label>
+        <input type="email" name="email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+    
+        <button>login</button>
+      </form>
+      <a href="./signup.html">New user</a>
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+      <script src="../js/login.js"></script> 
+        
 </body>
 </html>
