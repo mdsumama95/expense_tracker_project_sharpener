@@ -1,19 +1,21 @@
-     
-async function login(e){
-    try{
+   
+function login(e){
       e.preventDefault();
-      //console.log(e.target.email.value);
-      const signupDetails = {
-         
+      console.log(e.target.name);
+      const loginDetails = {
           email: e.target.email.value,
           password : e.target.password
-  
       }
-     // console.log(signupDetails);
-      const response = await axios.post('http://localhost:3000/user/signup', signupDetails)
-          if(response.status == 201){
-              window.location.href="../html/expesneHome.html"
-          }else{
-              throw new error('Failed to login')
-          }
+      console.log(loginDetails)
+      axios.post('http://localhost:3000/user/login', loginDetails).then(response => {
+         if(response.status == 200)
+            alert(response.data.message)
+      }).catch(err => {
+        console.log(JSON.stringify(err))
+        document.body.innerHTML += `<div style = "colored:red;">${err.message}</div>`;
+      })
+    }
+
+
+    
   
