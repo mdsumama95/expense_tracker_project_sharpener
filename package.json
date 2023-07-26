@@ -1,0 +1,34 @@
+{
+  "name": "expense_tracker_project_sharpener",
+  "version": "1.0.0",
+  "description": "my new project",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdsumama95/expense_tracker_project_sharpener.git"
+  },
+  "author": "md",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdsumama95/expense_tracker_project_sharpener/issues"
+  },
+  "homepage": "https://github.com/mdsumama95/expense_tracker_project_sharpener#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs": "0.0.1-security",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.5.2",
+    "path": "^0.12.7",
+    "sequelize": "^6.32.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
