@@ -17,7 +17,3 @@ async function login(e){
               throw new error('Failed to login')
           }
   
-    }catch(err){
-      document.body.innerHTML = '${err}';
-    }
-  }
