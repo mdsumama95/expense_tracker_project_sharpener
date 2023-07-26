@@ -18,6 +18,6 @@ async function signup(e){
           }
   
     }catch(err){
-      document.body.innerHTML = '${err}';
+      document.body.innerHTML = `${err}`;
     }
   }

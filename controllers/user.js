@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
   try {
     const { name, email, password } = req.body; // Accessing name, email, and password from req.body
     if (!name || !email || !password) {
