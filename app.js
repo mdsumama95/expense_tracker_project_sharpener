@@ -15,8 +15,11 @@ app.use(cors());
 dotenv.config();
 
 const userRouter = require('./router/user')
+const expenseRouter = require('./router/expense')
 
 app.use('/user', userRouter)
+
+app.use('/expense', expenseRouter)
 
 //User.hasMany(project);
 //project.belongsTo(User);

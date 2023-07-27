@@ -2,18 +2,19 @@ async function saveToServer(event) {
     event.preventDefault();
     const amount = event.target.amount.value;
     const desc = event.target.description.value;
+    const category = event.target.category.value;
 
     const obj = {
       amount,
-      desc
+      desc,
+      category
     };
 
     try {
       console.log(obj,"postdataobj")
-      const response = await axios.post("http://localhost:3000/expense", obj);
+      const response = await axios.post("http://localhost:3000/expense/addExpense", obj);
       console.log(response.data);
       showUserOnScreen(response.data);
-      calculateTotalPrice();
     } catch (err) {
       document.body.innerHTML += "<h4>Something went wrong</h4>";
       console.log(err);
@@ -23,10 +24,10 @@ async function saveToServer(event) {
   async function removeItemFromServer(id) {
     try {
       console.log(id);
-      const response = await axios.delete(`http://localhost:3000/expense/${id}`);  
+      const response = await axios.delete(`http://localhost:3000/expense/deleteExpense${id}`);  
       console.log(response.data);
-       calculateTotalPrice(response.data); // Update total price after deletion
-    } catch (error) {
+    } 
+    catch (error) {
       console.log(error);
     }
   }
@@ -35,12 +36,11 @@ async function saveToServer(event) {
 
   async function showItemsFromServer() {
     try {
-      const response = await axios.get("http://localhost:3000/expense");
+      const response = await axios.get("http://localhost:3000/expense/getexpenses");
       console.log(response.data);
       for (let i = 0; i < response.data.length; i++) {
         showUserOnScreen(response.data[i]);
       }
-      calculateTotalPrice(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +50,7 @@ async function saveToServer(event) {
     const parentElem = document.getElementById('listOfItems');
     const childElem = document.createElement('li');
     childElem.style.marginTop = '10px';
-    childElem.innerHTML = ` ${obj.price} - ${obj.name} `;
+    childElem.innerHTML = ` ${obj.price} - ${obj.name}-${obj.category} `;
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete Product';
@@ -63,19 +63,7 @@ async function saveToServer(event) {
     childElem.appendChild(deleteButton);
     parentElem.appendChild(childElem);
   }
-  var totalPrice = 0;
-  async function calculateTotalPrice(data) {
-    try {
-      for (let i = 0; i < data.length; i++) {
-        totalPrice += (data[i].price);
-      }
-      console.log(totalPrice,"totalPrice");
-      const totalElem = document.getElementById('totalPrice');
-      totalElem.textContent = `Total Price: $${totalPrice}`;
-    } catch (error) {
-      console.log(error);
-     }
   
-  }
+
 
   window.addEventListener("DOMContentLoaded", showItemsFromServer);
