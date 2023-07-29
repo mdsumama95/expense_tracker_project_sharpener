@@ -2,10 +2,13 @@ const User = require('../models/users');
 const bcrypt = require('bcrypt');
 
 
-
+function generateAccessToken(id, email) {
+  return jwt.sign({ userId: id, email: email }, process.env.TOKEN);
+}
 const signup = async (req, res) => {
+
   try {
-    const { name, email, password } = req.body; // Accessing name, email, and password from req.body
+    const { name, email, password } = req.body; 
     if (!name || !email || !password) {
       return res.status(400).json({ error: "Missing required parameters" });
     }
@@ -21,37 +24,13 @@ const signup = async (req, res) => {
       email: email,
       password: hashedPassword,
     });
-
+   
     return res.status(201).json({ message: 'User created successfully!' });
   } catch (error) {
-    console.log(error);
+    console.log(err);
     return res.status(500).json({ error: 'An error occurred.' });
   }
 };
-
-
-/*function isstringinvalid(string) {
-    if (string == undefined || string.length === 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-const signup = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        console.log('email', email);
-        if (isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)) {
-            return res.status(400).json({ err: "Badparameter. Something is missing" });
-        }
-        await User.create({ name, email, password }); // Add 'await' here
-        res.status(201).json({ message: 'Successfully create new user' });
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-*/
 
 const login = async (req, res) => {
   try {
@@ -69,7 +48,7 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Incorrect password" });
     }
-    return res.status(200).json({ message: 'Login successful!' });
+    return res.status(200).json({success: true, message: "Login successful!",token:generateAccessToken(user[0].id, user[0].name) });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: 'An error occurred.' });

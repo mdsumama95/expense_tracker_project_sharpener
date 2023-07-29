@@ -1,15 +1,15 @@
    
-function login(e){
-      e.preventDefault();
-      console.log(e.target.name);
+function login(event){
+  event.preventDefault();
+      console.log(event.target.name);
       const loginDetails = {
-          email: e.target.email.value,
-          password : e.target.password
+          email: event.target.email.value,
+          password : event.target.password
       }
       console.log(loginDetails)
       axios.post('http://localhost:3000/user/login', loginDetails).then(response => {
-         if(response.status == 200)
             alert(response.data.message)
+            console.log(response.data)
             window.location.href = '../html/expesneHome.html';
       }).catch(err => {
         console.log(JSON.stringify(err))

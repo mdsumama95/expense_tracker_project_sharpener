@@ -4,14 +4,14 @@ const addexpense = (req,res) => {
     if(amount == undefined || amount.length == 0){
         return res.status(400).json({success: false, message: 'parameter is missing'})
     }
-    Expense.create({amount,desc,category}).then(expense => {
+    req.user.createExpense({amount, desc, category}).then(expense => {
         return res.status(201).json({expense, success:true});
     }).catch(err => {
-        return res.json(500).json({success: false, error: err})
+return res.json(500).json({success: false, error: err})
     })
-} 
+}         
 const getexpenses = (req, res) => {
-    Expense.findAll().then(expenses => {
+    req.user.getexpenses().then(expenses => {
         return res.status(200).json({expenses, success:true})
     })
     .catch(err => {

@@ -36,7 +36,8 @@ async function saveToServer(event) {
 
   async function showItemsFromServer() {
     try {
-      const response = await axios.get("http://localhost:3000/expense/getexpenses");
+      const token = localStorage.getItem('token')
+      const response = await axios.get('http://localhost:3000/expense/getexpenses', {Headers: {"Authorization":token}});
       console.log(response.data);
       for (let i = 0; i < response.data.length; i++) {
         showUserOnScreen(response.data[i]);
