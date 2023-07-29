@@ -7,6 +7,7 @@ const sequelize = require('./util/database');
 
 const User = require("./models/users");
 const Expense = require('./models/expenses');
+const Order = require('./models/orders')
 
 
 
@@ -21,14 +22,21 @@ dotenv.config();
 
 const userRouter = require('./router/user')
 const expenseRouter = require('./router/expense');
+const purchaseRouter = require("./router/purchase");
 
 
 app.use('/user', userRouter)
 
 app.use('/expense', expenseRouter)
 
+app.use("/purchase", purchaseRouter);
+
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 
 

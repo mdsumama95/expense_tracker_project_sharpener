@@ -24,6 +24,7 @@ async function saveToServer(event) {
   async function removeItemFromServer(id) {
     try {
       console.log(id);
+      const token = localStorage.getItem('token')
       const response = await axios.delete(`http://localhost:3000/expense/deleteExpense${id}`);  
       console.log(response.data);
     } 
@@ -34,6 +35,25 @@ async function saveToServer(event) {
 
   document.getElementById("expenseForm").addEventListener("submit", saveToServer);
 
+
+  document.getElementById('rzr-button1').onclick = async function (e) {
+    const token = localStorage.getItem('token')
+    const response = await axios.get('http://localhost:3000/purchase/premiumMemberShip', {header : {"Authorization" : token}});
+    console.log(response);
+    var option = 
+    {
+      "Key": response.data.Key_id,
+      "order_id": response.data.order_id,
+      "handler": async function(response){
+        await axios.post('http://localhost:3000/purchase/updateTransactionStatus', {
+          order_id: option.order_id,
+          payment_id: response.razorpay_payment_id,
+        }, {header : {"Authorization" : token}})
+
+        alert('you are a premium user')
+      },
+    };
+  }
   async function showItemsFromServer() {
     try {
       const token = localStorage.getItem('token')
