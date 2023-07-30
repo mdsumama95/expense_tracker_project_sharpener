@@ -2,8 +2,8 @@ const User = require('../models/users');
 const bcrypt = require('bcrypt');
 
 
-function generateAccessToken(id, email) {
-  return jwt.sign({ userId: id, email: email }, process.env.TOKEN);
+function generateAccessToken(id, email, ispremiumuser) {
+  return jwt.sign({ userId: id, email: email , ispremiumuser}, process.env.TOKEN);
 }
 const signup = async (req, res) => {
 
@@ -48,7 +48,7 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Incorrect password" });
     }
-    return res.status(200).json({success: true, message: "Login successful!",token:generateAccessToken(user[0].id, user[0].name) });
+    return res.status(200).json({success: true, message: "Login successful!",token:generateAccessToken(user[0].id, user[0].name, user[0].ispremiumuser) });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: 'An error occurred.' });

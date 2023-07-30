@@ -38,7 +38,7 @@ async function saveToServer(event) {
 
   document.getElementById('rzr-button1').onclick = async function (e) {
     const token = localStorage.getItem('token')
-    const response = await axios.get('http://localhost:3000/purchase/premiumMemberShip', {header : {"Authorization" : token}});
+    const response = await axios.get('http://localhost:3000/purchase/premiumMemberShip', {headers : {"Authorization" : token}});
     console.log(response);
     var option = 
     {
@@ -51,13 +51,37 @@ async function saveToServer(event) {
         }, {header : {"Authorization" : token}})
 
         alert('you are a premium user')
+        document.getElementById('rzr-button1').style.visibility = "hidden"
+        document.getElementById('message').innerHTML = "you are a premium user"
+        localStorage.setItem('token', res.data.token)
+        showLeaderboard()
       },
     };
   }
+  function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+function showPremiumuserMessage(){
+  document.getElementById('rzr-button1').style.visibility = "hidden"
+  document.getElementById('message').innerHTML = "you are a premium user"
+}
   async function showItemsFromServer() {
     try {
       const token = localStorage.getItem('token')
-      const response = await axios.get('http://localhost:3000/expense/getexpenses', {Headers: {"Authorization":token}});
+      const decodeToken = parseJwt(token)
+      const ispremiumuser = decodeToken.ispremiumuser
+      if(ispremiumuser){
+        showPremiumuserMessage()
+        showLeaderboard()
+      }
+   
+      const response = await axios.get('http://localhost:3000/expense/getexpenses', {headers: {"Authorization":token}});
       console.log(response.data);
       for (let i = 0; i < response.data.length; i++) {
         showUserOnScreen(response.data[i]);
@@ -84,7 +108,24 @@ async function saveToServer(event) {
     childElem.appendChild(deleteButton);
     parentElem.appendChild(childElem);
   }
+  function showLeaderboard(){
+    const inputElement = document.createElement("input")
+    inputElement.type = "button"
+    inputElement.value = 'Show Leaderboard'
+    inputElement.onclick = async() => {
+      const token = localStorage.getItem('token')
+      const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard', {headers : {"Authorization" : token}})
+      console.log(userLeaderBoardArray)
+
+      var leaderBoardElem = document.getElementById('leaderboard')
+      leaderBoardElem.innerHTML += '<h1> leader Board</h1>'
+      userLeaderBoardArray.data.forEach((userDetails) => {
+        leaderBoardElem.innerHTML += `<li>Name - ${userDetails.name} Toala expense</li>`
+      })
+    }
+    document.getElementById("message").appendChild(inputElement);
+  }
   
 
 
-  window.addEventListener("DOMContentLoaded", showItemsFromServer);
+  window.addEventListener("DOMContentLoaded", showItemsFromServer,showLeaderboard);

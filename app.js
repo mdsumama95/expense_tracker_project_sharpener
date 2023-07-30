@@ -23,6 +23,7 @@ dotenv.config();
 const userRouter = require('./router/user')
 const expenseRouter = require('./router/expense');
 const purchaseRouter = require("./router/purchase");
+const premiumFeatureRoutes = require("./router/premiumFeature")
 
 
 app.use('/user', userRouter)
@@ -30,6 +31,8 @@ app.use('/user', userRouter)
 app.use('/expense', expenseRouter)
 
 app.use("/purchase", purchaseRouter);
+
+app.use("/premium", premiumFeatureRoutes);
 
 
 User.hasMany(Expense);
