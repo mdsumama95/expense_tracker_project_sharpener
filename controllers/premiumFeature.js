@@ -4,21 +4,20 @@ const sequelize = require('../util/database');
 
 const showLeaderBoard = async (req, res) => {
     try {
-     const users = await User.findAll()
-     const expenses = await Expense.findAll();
-     expenses.forEach((expense) => {
-        if(userAggregatedExpenses[expense.userId]){
-          userAggregatedExpenses[expense.userId] = userAggregatedExpenses[expense.userId] +expense.expenseamount
-        } else{
-            userAggregatedExpenses[expense.userId] = expense.expenseamount
+     
+     const leaderboardofusers = await User.findAll({
+       attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.expenseamount')), 'total_cost']],
+       include: [
+        {
+          model: Expense,
+          attributes: []
         }
+       ],
+       group:['user.id'],
+       order:[['total_cost', 'DESC']]
+
      })
-     var userLeaderBoardDetails = [];
-     users.forEach((user)=> {
-        userLeaderBoardDetails.push({name:user.name, total_cost: userAggregatedExpenses[user.id]})
-     })
-      console.log(userLeaderBoardDetails);
-      res.status(200).json(userLeaderBoardDetails)
+     res.status(200).json(leaderboardofusers)
 
     } catch(err) {
         console.log(err)
