@@ -17,5 +17,9 @@ const User = sequelize.define('users', {
     },
     password:Sequelize.STRING,
     ispremiumuser: Sequelize.BOOLEAN,
+    totalExpenses: {
+        type: Sequelize.INTEGER,
+        default:0,
+    }
 })
 module.exports = User;

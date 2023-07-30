@@ -5,17 +5,29 @@ const addExpense = (req,res) => {
         return res.status(400).json({success: false, message: 'parameter is missing'})
     }
     req.user.createExpense({amount, desc, category}).then(expense => {
-        return res.status(201).json({expense, success:true});
+        const totalExpenses = Number(req.user.totalExpenses)+Number(expenseamount)
+        console.log(totalExpenses)
+        User.update({
+            totalExpenses: totalExpense
+        },{
+            where: {id: req.user.id}
+        }).then(async() => {
+            res.status(200).json({expense:expense})
+        })
+         .catch(async(err) => {
+            return res.status(500).json({success: false, error: err})
+         })
     }).catch(err => {
 return res.json(500).json({success: false, error: err})
     })
 }         
 const getexpenses = (req, res) => {
     req.user.getexpenses().then(expenses => {
+
         return res.status(200).json({expenses, success:true})
     })
     .catch(err => {
-return res.status(402).json({error:err, success: false})
+       return res.status(402).json({error:err, success: false})
     })
 }
 const deleteExpense = (req,res) => {
