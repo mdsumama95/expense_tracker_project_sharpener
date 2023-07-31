@@ -3,7 +3,7 @@ const sgMail = require('@sendgrid/mail');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/users');
-const Forgotpassword = require('../models/reset');
+const ResetPassword = require('../models/reset');
 
 const forgotpassword = async (req, res) => {
     try {
@@ -52,7 +52,7 @@ const forgotpassword = async (req, res) => {
 
 const resetpassword = (req, res) => {
     const id =  req.params.id;
-    Forgotpassword.findOne({ where : { id }}).then(forgotpasswordrequest => {
+    ResetPassword.findOne({ where : { id }}).then(forgotpasswordrequest => {
         if(forgotpasswordrequest){
             forgotpasswordrequest.update({ active: false});
             res.status(200).send(`<html>
@@ -81,7 +81,7 @@ const updatepassword = (req, res) => {
     try {
         const { newpassword } = req.query;
         const { resetpasswordid } = req.params;
-        Forgotpassword.findOne({ where : { id: resetpasswordid }}).then(resetpasswordrequest => {
+        ResetPassword.findOne({ where : { id: resetpasswordid }}).then(resetpasswordrequest => {
             User.findOne({where: { id : resetpasswordrequest.userId}}).then(user => {
                 // console.log('userDetails', user)
                 if(user) {

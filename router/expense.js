@@ -7,9 +7,9 @@ const router = express.Router();
 
 
 
-router.post('/addExpense', userauthentication, expenseController.addExpense)
-router.get('/getexpenses', userauthentication, expenseController.getexpenses)
-router.delete('/deleteExpense/:expenseid',userauthentication, expenseController.deleteExpense)
+router.post('/addExpense', userauthentication.authenticate, expenseController.addExpense)
+router.get('/getexpenses', userauthentication.authenticate, expenseController.getexpenses)
+router.delete('/deleteExpense/:expenseid',userauthentication.authenticate, expenseController.deleteExpense)
 
 module.exports = router;
 

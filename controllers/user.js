@@ -1,58 +1,60 @@
-const User = require('../models/users');
+
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/users');
 
+ const signup = (req, res)=>{
+    const { name, email, password } = req.body;
+    const saltRounds = 10;
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            // Store hash in your password DB.
+            if(err){
+                console.log('Unable to create new user')
+                res.json({message: 'Unable to create new user'})
+            }
+            User.create({ name, email, password: hash }).then(() => {
+                res.status(201).json({message: 'Successfuly create new user'})
+            }).catch(err => {
+                res.status(403).json(err);
+            })
 
-function generateAccessToken(id, email, ispremiumuser) {
-  return jwt.sign({ userId: id, email: email , ispremiumuser}, process.env.TOKEN);
-}
-const signup = async (req, res) => {
-
-  try {
-    const { name, email, password } = req.body; 
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: "Missing required parameters" });
-    }
-
-    const existingUser = await User.findOne({ where: { email: email } });
-    if (existingUser) {
-      return res.status(409).json({ error: "Email already registered" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
-      name: name,
-      email: email,
-      password: hashedPassword,
+        });
     });
-   
-    return res.status(201).json({ message: 'User created successfully!' });
-  } catch (error) {
-    console.log(err);
-    return res.status(500).json({ error: 'An error occurred.' });
-  }
-};
+}
 
-const login = async (req, res) => {
-  try {
-    const {email, password } = req.body; 
-    if (email == NULL || password == NULL) {
-      return res.status(400).json({ error: "Missing required parameters" });
-    }
-    const user = await User.findOne({ where: { email: email } });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+function generateAccessToken(id) {
+    return jwt.sign(id ,process.env.TOKEN_SECRET);
+}
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+const login = (req, res) => {
+    const { email, password } = req.body;
+    console.log(password);
+    User.findAll({ where : { email }}).then(user => {
+        if(user.length > 0){
+            bcrypt.compare(password, user[0].password, function(err, response) {
+                if (err){
+                console.log(err)
+                return res.json({success: false, message: 'Something went wrong'})
+                }
+                if (response){
+                    console.log(JSON.stringify(user))
+                    const jwttoken = generateAccessToken(user[0].id);
+                    res.json({token: jwttoken, success: true, message: 'Successfully Logged In'})
+                // Send JWT
+                } else {
+                // response is OutgoingMessage object that server response http request
+                return res.status(401).json({success: false, message: 'passwords do not match'});
+                }
+            });
+        } else {
+            return res.status(404).json({success: false, message: 'passwords do not match'})
+        }
+    })
+}
 
-    if (!passwordMatch) {
-      return res.status(401).json({ error: "Incorrect password" });
-    }
-    return res.status(200).json({success: true, message: "Login successful!",token:generateAccessToken(user[0].id, user[0].name, user[0].ispremiumuser) });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: 'An error occurred.' });
-  }
-};
+module.exports = {
+    signup,
+    login,
 
-module.exports = {signup, login};
+}
