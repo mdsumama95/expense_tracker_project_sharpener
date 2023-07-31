@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mdsumama95/expense_tracker_project_sharpener#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -29,7 +30,9 @@
     "mysql2": "^3.5.2",
     "path": "^0.12.7",
     "razorpay": "^2.9.1",
-    "sequelize": "^6.32.1"
+    "sequelize": "^6.32.1",
+    "sib-api-v3-sdk": "^8.5.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
