@@ -12,6 +12,7 @@ module.exports = router;*/
 const express = require('express');
 
 const userController = require('../controllers/user');
+const expenseController = require('../controllers/expense')
 
 const router = express.Router();
 const authenticatemiddleware = require('../middleware/auth')
@@ -19,6 +20,7 @@ const authenticatemiddleware = require('../middleware/auth')
 router.post('/signup', userController.signup);
 
 router.post('/login',  userController.login)
+router.get('/download', authenticatemiddleware.authenticate, expenseController.downloadExpenses)
 
 //router.post('/addexpense', authenticatemiddleware.authenticate, expenseController.addexpense )
 
