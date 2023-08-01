@@ -101,10 +101,31 @@ const downloadExpenses =  async (req, res) => {
         res.status(500).json({ error: err, success: false, message: 'Something went wrong'})
     }
 };
+
+const getAllExpensesforPagination = async (req, res) => {
+    try {
+      const pageNo = req.params.page;
+      const limit = 10;
+      const offset = (pageNo - 1) * limit;
+      const totalExpenses = await Expense.count({
+        where: { userId: req.user.id },
+      });
+      const totalPages = Math.ceil(totalExpenses / limit);
+      const expenses = await Expense.findAll({
+        where: { userId: req.user.id },
+        offset: offset,
+        limit: limit,
+      });
+      res.json({ expenses: expenses, totalPages: totalPages });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 module.exports = {
     addExpense,
     getexpenses,
     deleteExpense,
-    downloadExpenses
+    downloadExpenses,
+    getAllExpensesforPagination
 }
   
