@@ -1,123 +1,121 @@
-const uuid = require('uuid');
-const sgMail = require('@sendgrid/mail');
-const bcrypt = require('bcrypt');
+const path = require("path");
+const User = require("../models/users");
+const ResetPassword = require("../models/forgotpassword");
+const bcrypt = require("bcrypt");
+const Sib = require("sib-api-v3-sdk");
+const { v4: uuidv4 } = require("uuid");
+const saltRounds = 10;
 
-const User = require('../models/users');
-const ResetPassword = require('../models/reset');
+const hashPassword = async (password) => {
+  return await bcrypt.hash(password, saltRounds);
+};
 
-const forgotpassword = async (req, res) => {
-    try {
-        const { email } =  req.body;
-        const user = await User.findOne({where : { email }});
-        if(user){
-            const id = uuid.v4();
-            user.createForgotpassword({ id , active: true })
-                .catch(err => {
-                    throw new Error(err)
-                })
+exports.forgotPasswordPage = async (req, res, next) => {
+  try {
+    res
+      .status(200)
+      .sendFile(
+        path.join(__dirname, "../", "public", "views", "forgotPassword.html")
+      );
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-            sgMail.setApiKey(process.env.API_KEY)
+exports.sendMail = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const requestId = uuidv4();
 
-            const msg = {
-                to: email, // Change to your recipient
-                from: 'mdsumama9090@gmail.com', // Change to your verified sender
-                subject: 'Sending with SendGrid is Fun',
-                text: 'and easy to do anywhere, even with Node.js',
-                html: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
-            }
+    const recepientEmail = await User.findOne({ where: { email: email } });
 
-            sgMail
-            .send(msg)
-            .then((response) => {
-
-                // console.log(response[0].statusCode)
-                // console.log(response[0].headers)
-                return res.status(response[0].statusCode).json({message: 'Link to reset password sent to your mail ', sucess: true})
-
-            })
-            .catch((error) => {
-                throw new Error(error);
-            })
-
-            //send mail
-        }else {
-            throw new Error('User doesnt exist')
-        }
-    } catch(err){
-        console.error(err)
-        return res.json({ message: err, sucess: false });
+    if (!recepientEmail) {
+      return res
+        .status(404)
+        .json({ message: "Please provide the registered email!" });
     }
 
-}
+    const resetRequest = await ResetPassword.create({
+      id: requestId,
+      isActive: true,
+      userId: recepientEmail.dataValues.id,
+    });
 
-const resetpassword = (req, res) => {
-    const id =  req.params.id;
-    ResetPassword.findOne({ where : { id }}).then(forgotpasswordrequest => {
-        if(forgotpasswordrequest){
-            forgotpasswordrequest.update({ active: false});
-            res.status(200).send(`<html>
-                                    <script>
-                                        function formsubmitted(e){
-                                            e.preventDefault();
-                                            console.log('called')
-                                        }
-                                    </script>
+    const client = Sib.ApiClient.instance;
+    const apiKey = client.authentications['api-key'];
+    apiKey.apiKey = process.env.PASSWORD_API_KEY;
+    const transEmailApi = new Sib.TransactionalEmailsApi();
+    const sender = {
+      email: "mdsumama9090@gmail.com",
+      name: "mohd",
+    };
+    const receivers = [
+      {
+        email: email,
+      },
+    ];
+    const emailResponse = await transEmailApi.sendTransacEmail({
+      sender,
+      To: receivers,
+      subject: "Expense Tracker Reset Password",
+      textContent: "Link Below",
+      htmlContent: `<h3>Sharpener expense project  reset the password. Here is the link below >>></h3>
+      <a href="http://localhost:3000/password/resetPasswordPage/{{params.requestId}}"> Click Here</a>`,
+      params: {
+        requestId: requestId,       
+      },
+    });
+    console.log(emailResponse);
+    return res.status(200).json({
+      message:
+        "Link for reset the password is successfully send on your Mail Id!",
+    });
+  } catch (error) {
+    console.log("error");
+    return res.status(409).json({ message: "failed changing password" });
+  }
+};
 
-                                    <form action="/password/updatepassword/${id}" method="get">
-                                        <label for="newpassword">Enter New password</label>
-                                        <input name="newpassword" type="password" required></input>
-                                        <button>reset password</button>
-                                    </form>
-                                </html>`
-                                )
-            res.end()
-
-        }
-    })
-}
-
-const updatepassword = (req, res) => {
-
-    try {
-        const { newpassword } = req.query;
-        const { resetpasswordid } = req.params;
-        ResetPassword.findOne({ where : { id: resetpasswordid }}).then(resetpasswordrequest => {
-            User.findOne({where: { id : resetpasswordrequest.userId}}).then(user => {
-                // console.log('userDetails', user)
-                if(user) {
-                    //encrypt the password
-
-                    const saltRounds = 10;
-                    bcrypt.genSalt(saltRounds, function(err, salt) {
-                        if(err){
-                            console.log(err);
-                            throw new Error(err);
-                        }
-                        bcrypt.hash(newpassword, salt, function(err, hash) {
-                            // Store hash in your password DB.
-                            if(err){
-                                console.log(err);
-                                throw new Error(err);
-                            }
-                            user.update({ password: hash }).then(() => {
-                                res.status(201).json({message: 'Successfuly update the new password'})
-                            })
-                        });
-                    });
-            } else{
-                return res.status(404).json({ error: 'No user Exists', success: false})
-            }
-            })
-        })
-    } catch(error){
-        return res.status(403).json({ error, success: false } )
+exports.resetPasswordPage  = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .sendFile(
+        path.join(__dirname, "../", "frontend", "html", "resetPassword.html")
+      );
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.updatePassword = async (req, res) => {
+  try {
+    const requestId = req.headers.referer.split("/");
+    const password = req.body.password;
+    const checkResetRequest = await ResetPassword.findAll({
+      where: { id: requestId[requestId.length - 1], isActive: true },
+    });
+    console.log(checkResetRequest);
+    if (checkResetRequest[0]) {
+      const userId = checkResetRequest[0].dataValues.userId;
+      const result = await ResetPassword.update(
+        { isActive: false },
+        { where: { id: requestId } }
+      );
+      const newPassword = await hashPassword(password);
+      const user = await User.update(
+        { password: newPassword },
+        { where: { id: userId } }
+      );
+      return res
+        .status(200)
+        .json({ message: "Successfully changed password!" });
+    } else {
+      return res
+        .status(409)
+        .json({ message: "Link is Used Once, Request for new Link!" });
     }
-
-}
-
-
-module.exports = {
-    forgotpassword,
-    updatepassword,
-    resetpassword
-}
+  } catch (err) {
+    console.log(err);
+    return res.status(409).json({ message: "Failed to change password!" });
+  }
+};

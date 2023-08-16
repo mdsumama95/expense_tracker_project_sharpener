@@ -1,43 +1,28 @@
-//const { default: transfers } = require('razorpay/dist/types/transfers');
-const User = require("../models/users");
-const Expense = require('../models/expenses');
-const sequelize = require('../util/database')
-const addExpense = async (req,res) => {
-    const t = await sequelize.transaction();
-    try{
-    const {amount, desc, category} = req.body;
-    if(amount == undefined || amount.length == 0){
-        return res.status(400).json({success: false, message: 'parameter is missing'})
-    }
-     const expense = await Expense.create({amount, desc, category, userId: req.user.id}, { transaction: t })
-        const totalExpense = Number(req.user.totalExpenses)+Number(expenseamount)
-        console.log(totalExpense)
-       await User.update({
-            totalExpenses: totalExpense
-        
-        },{
-            where: {id: req.user.id},
-            transaction:t
-          
-        })
-            await t.commit();
-            res.status(200).json({expense:expense})
-        }
-         catch(err) {
-            await t.rollback();
-            return res.status(500).json({success: false, error: err})
-         }
-    
-}         
-const getexpenses = (req, res) => {
-    req.user.getexpenses().then(expenses => {
 
-        return res.status(200).json({expenses, success:true})
-    })
-    .catch(err => {
-       return res.status(402).json({error:err, success: false})
-    })
-}
+const User = require('../models/users');
+const Expense = require('../models/expenses');
+const sequelize = require('../util/database');
+
+
+    const addExpense = (req, res) => {
+        const {amount, description, category } = req.body;
+        req.user.createExpense({amount, description, category }).then(expense => {
+            return res.status(201).json({expense, success: true } );
+        }).catch(err => {
+            return res.status(403).json({success : false, error: err})
+        })
+    }
+   
+    const getexpenses = (req, res)=> {
+
+        req.user.getExpenses().then(expenses => {
+            return res.status(200).json({expenses, success: true})
+        })
+        .catch(err => {
+            return res.status(402).json({ error: err, success: false})
+        })
+    }
+
 const deleteExpense = (req,res) => {
    const expenseid = req.params.expenseid;
    if(expenseid == undefined || expenseid.length == 0){
@@ -48,13 +33,13 @@ const deleteExpense = (req,res) => {
         return res.status(404).json({success: false, message:'Expense does not belong to the user'})
     }
      return res.status(200).json({success: true, message:" Deleted Successfully"})
+   
    }).catch(err => {
     console.log(err);
     return res.status(403).json({success: true, message:"failed"})
    })
 }
 const downloadExpenses =  async (req, res) => {
-
     try {
         if(!req.user.ispremiumuser){
             return res.status(401).json({ success: false, message: 'User is not a premium User'})
@@ -121,6 +106,7 @@ const getAllExpensesforPagination = async (req, res) => {
       console.log(err);
     }
   };
+
 module.exports = {
     addExpense,
     getexpenses,
@@ -128,4 +114,3 @@ module.exports = {
     downloadExpenses,
     getAllExpensesforPagination
 }
-  
