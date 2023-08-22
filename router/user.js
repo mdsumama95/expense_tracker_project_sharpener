@@ -35,10 +35,19 @@ router.post('/login', userController.login)
 
 router.post('/addExpense', authenticatemiddleware.authenticate, expenseController.addExpense )
 
+
 router.get('/download', authenticatemiddleware.authenticate, expenseController.downloadExpenses)
 
-router.get('/getexpenses', authenticatemiddleware.authenticate, expenseController.getexpenses )
+router.get('/getexpenses', authenticatemiddleware.authenticate, expenseController.getexpenses)
 
+// router.get('/PremiumUser', authenticatemiddleware, userController.PremiumUser)
+//getAllExpensesforPagination
+// router.get('/getAllExpensesforPagination/:page', expenseController.getAllExpensesforPagination)
 router.delete('/deleteExpense/:expenseid', authenticatemiddleware.authenticate, expenseController.deleteExpense)
+
+
+// //LeaderBoard Routes
+
+
 
 module.exports = router;

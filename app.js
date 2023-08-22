@@ -74,6 +74,9 @@ const Forgotpassword = require('./models/forgotpassword');
 const userRoutes = require('./router/user')
 const purchaseRoutes = require('./router/purchase')
 const resetPasswordRoutes = require('./router/resetPassword')
+const premiumFeatureRoutes = require("./router/premiumFeature")
+// const premiumRoutes = require('./router/premiumFeature')
+
 
 const app = express();
 const dotenv = require('dotenv');
@@ -91,6 +94,10 @@ app.use(express.static("frontend"));
 app.use('/user', userRoutes)
 app.use('/purchase', purchaseRoutes)
 app.use('/password', resetPasswordRoutes);
+app.use("/premium", premiumFeatureRoutes); 
+
+
+
 
 
 

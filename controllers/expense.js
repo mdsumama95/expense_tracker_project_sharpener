@@ -12,33 +12,58 @@ const sequelize = require('../util/database');
             return res.status(403).json({success : false, error: err})
         })
     }
-   
-    const getexpenses = (req, res)=> {
-
-        req.user.getExpenses().then(expenses => {
+    const getexpenses = async (req, res)=> {
+       try{
+        console.log(req.user.ispremiumuser)
+        if(req.user.ispremiumuser){
+           const expenses = await req.user.getExpenses()
+            return res.status(201).json({expenses, success: true, message:"premium hai hai"})
+         }
+         else{
+            const expenses = await req.user.getExpenses()
             return res.status(200).json({expenses, success: true})
-        })
-        .catch(err => {
+         }
+       }
+        catch(err){
             return res.status(402).json({ error: err, success: false})
-        })
+        } 
     }
-
-const deleteExpense = (req,res) => {
-   const expenseid = req.params.expenseid;
-   if(expenseid == undefined || expenseid.length == 0){
-       res.status(400).json({success: false})
-   }
-   Expense.destroy({where: {id: expenseid, userId: req.user.id}}).then((noofrows) => {
-    if(noofrows == 0){
-        return res.status(404).json({success: false, message:'Expense does not belong to the user'})
-    }
-     return res.status(200).json({success: true, message:" Deleted Successfully"})
    
-   }).catch(err => {
-    console.log(err);
-    return res.status(403).json({success: true, message:"failed"})
-   })
-}
+   
+    const deleteExpense =  async (req,res) => {
+        try{
+        const expenseid = req.params.expenseid;
+        if(expenseid == undefined || expenseid.length == 0){
+            res.status(400).json({success: false})
+        }
+        const noofrows = await Expense.destroy({where: {id: expenseid, userId: req.user.id}})
+         if(noofrows == 0){
+             return res.status(404).json({success: false, message:'Expense does not belong to the user'})
+         }
+          return res.status(200).json({success: true, message:" Deleted Successfully"})
+        
+        
+    } catch(err) {
+         console.log(err);
+         return res.status(403).json({success: true, message:"failed"})
+        }
+     }
+// const deleteExpense = (req,res) => {
+//    const expenseid = req.params.expenseid;
+//    if(expenseid == undefined || expenseid.length == 0){
+//        res.status(400).json({success: false})
+//    }
+//    Expense.destroy({where: {id: expenseid, userId: req.user.id}}).then((noofrows) => {
+//     if(noofrows == 0){
+//         return res.status(404).json({success: false, message:'Expense does not belong to the user'})
+//     }
+//      return res.status(200).json({success: true, message:" Deleted Successfully"})
+   
+//    }).catch(err => {
+//     console.log(err);
+//     return res.status(403).json({success: true, message:"failed"})
+//    })
+// }
 const downloadExpenses =  async (req, res) => {
     try {
         if(!req.user.ispremiumuser){
@@ -87,30 +112,33 @@ const downloadExpenses =  async (req, res) => {
     }
 };
 
-const getAllExpensesforPagination = async (req, res) => {
-    try {
-      const pageNo = req.params.page;
-      const limit = 10;
-      const offset = (pageNo - 1) * limit;
-      const totalExpenses = await Expense.count({
-        where: { userId: req.user.id },
-      });
-      const totalPages = Math.ceil(totalExpenses / limit);
-      const expenses = await Expense.findAll({
-        where: { userId: req.user.id },
-        offset: offset,
-        limit: limit,
-      });
-      res.json({ expenses: expenses, totalPages: totalPages });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
+
+  
+  
+// const getAllExpensesforPagination = async (req, res) => {
+//     try {
+//       const pageNo = req.params.page;
+//       const limit = 5;
+//       const offset = (pageNo - 1) * limit;
+//       const totalExpenses = await Expense.count({
+//         where: { userId: req.user.id},
+//       });
+//       const totalPages = Math.ceil(totalExpenses / limit);
+//       const expenses = await Expense.findAll({ where: { userId: req.user.id },
+//         offset: offset,
+//         limit: limit,
+//       });
+//       res.json({ expenses: expenses, totalPages: totalPages });
+//     } catch (err) {
+//       console.log(err);
+//       res.status(500).json({ error: 'An error occurred' });
+//     }
+//   };
+  
 module.exports = {
     addExpense,
     getexpenses,
     deleteExpense,
-    downloadExpenses,
-    getAllExpensesforPagination
+    downloadExpenses
 }

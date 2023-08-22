@@ -25,3 +25,6 @@ function login(e) {
 function forgotpassword() {
   window.location.href = "../html/forgetPassword.html"
 }
+function signUpNew() {
+    window.location.href = "../html/signup.html"
+}
