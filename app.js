@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const express = require('express');
 var cors = require('cors')
 const fs = require("fs");
+const helmet = require('helmet');
 
 const sequelize = require('./util/database');
 const User = require('./models/users');
@@ -36,6 +37,8 @@ const morgan = require("morgan");
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(cors());
+app.use(helmet());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());  //this is for handling jsons
 app.use(express.static("frontend"));
