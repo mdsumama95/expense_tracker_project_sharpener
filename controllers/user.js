@@ -3,6 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
+const LoginPage = async (req, res, next) => {
+  try {
+    res.sendFile(path.join(__dirname, "../", "frontend", "html", "login.html"));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
  const signup = (req, res)=>{
     const { name, email, password } = req.body;
     const saltRounds = 10;
@@ -66,5 +74,6 @@ const login = async (req, res) => {
 
 module.exports = {
     signup,
-    login
+    login,
+    LoginPage
 }

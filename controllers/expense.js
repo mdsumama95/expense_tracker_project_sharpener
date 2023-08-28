@@ -3,7 +3,16 @@ const User = require('../models/users');
 const Expense = require('../models/expenses');
 const sequelize = require('../util/database');
 
-
+const HomePage = async (req, res, next) => {
+    try {
+      res.sendFile(
+        path.join(__dirname, "../", "frontend", "html", "expenseHome.html")
+      );
+    } catch(err) {
+    //   (err) =>
+     console.log(err);
+    }
+  };
     const addExpense = (req, res) => {
         const {amount, description, category } = req.body;
         req.user.createExpense({amount, description, category }).then(expense => {
@@ -121,5 +130,6 @@ module.exports = {
     addExpense,
     getexpenses,
     deleteExpense,
-    downloadExpenses
+    downloadExpenses,
+    HomePage
 }
