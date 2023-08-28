@@ -42,15 +42,21 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());  //this is for handling jsons
 app.use(express.static("frontend"));
-
-
 app.use('/user', userRoutes)
 app.use('/purchase', purchaseRoutes)
 app.use('/password', resetPasswordRoutes);
 app.use("/premium", premiumFeatureRoutes); 
 
 
-
+app.use('/', (req,res) => {
+     try{
+        console.log("url", req.url);
+        res.sendFile(path.joint(__dirname,`frontend/${req.url}`));
+     }
+     catch(err){
+        console.log(("err in app.js 51"))
+     }
+})
 
 
 
