@@ -5,6 +5,7 @@ const express = require('express');
 var cors = require('cors')
 const fs = require("fs");
 const helmet = require('helmet');
+const axios = require('axios')
 
 const sequelize = require('./util/database');
 const User = require('./models/users');
@@ -53,7 +54,7 @@ app.use("/premium", premiumFeatureRoutes);
 app.use('/', (req,res) => {
     try{
        console.log("url", req.url);
-       res.sendFile(path.joint(__dirname,`frontend/${req.url}`));
+       res.sendFile(path.join(__dirname,`frontend/${req.url}`));
     }
     catch(err){
        console.log(("err in app.js 51"))
