@@ -62,30 +62,7 @@ const login = async (req, res) => {
     }
   };
   
-/*
-const login = (req, res) => {
-    const { email, password } = req.body;
-    console.log(password);
-    User.findAll({ where : { email }}).then(user => {
-        if(user.length > 0){
-            bcrypt.compare(password, user[0].password, function(err, response) {
-                if (err){
-                console.log(err)
-                return res.json({success: false, message: 'Something went wrong'})
-                }
-                if (response){
-                    console.log(JSON.stringify(user))
-                    const jwttoken = generateAccessToken(user[0].id);
-                    res.json({token: jwttoken, success: true, message: 'Successfully Logged In'})
-                } else {
-                return res.status(401).json({success: false, message: 'passwords do not match'});
-                }
-            });
-        } else {
-            return res.status(404).json({success: false, message: 'passwords do not match'})
-        }
-    })
-}*/
+
 
 module.exports = {
     signup,
