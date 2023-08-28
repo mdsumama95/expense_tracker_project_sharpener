@@ -48,14 +48,16 @@ app.use('/password', resetPasswordRoutes);
 app.use("/premium", premiumFeatureRoutes); 
 
 
+
+
 app.use('/', (req,res) => {
-     try{
-        console.log("url", req.url);
-        res.sendFile(path.joint(__dirname,`frontend/${req.url}`));
-     }
-     catch(err){
-        console.log(("err in app.js 51"))
-     }
+    try{
+       console.log("url", req.url);
+       res.sendFile(path.joint(__dirname,`frontend/${req.url}`));
+    }
+    catch(err){
+       console.log(("err in app.js 51"))
+    }
 })
 
 
