@@ -20,6 +20,7 @@ const userRoutes = require('./router/user')
 const purchaseRoutes = require('./router/purchase')
 const resetPasswordRoutes = require('./router/resetPassword')
 const premiumFeatureRoutes = require("./router/premiumFeature")
+const expenseRouter = require("./router/expenseRouter")
 // const premiumRoutes = require('./router/premiumFeature')
 
 
@@ -43,23 +44,26 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());  //this is for handling jsons
 app.use(express.static("frontend"));
+
+app.use('/', userRoutes)
 app.use('/user', userRoutes)
 app.use('/purchase', purchaseRoutes)
 app.use('/password', resetPasswordRoutes);
 app.use("/premium", premiumFeatureRoutes); 
 
 
+app.use("/expenseHome", expenseRouter);
+app.use("/user", expenseRouter);
 
-
-app.use('/', (req,res) => {
-    try{
-       console.log("url", req.url);
-       res.sendFile(path.join(__dirname,`frontend/${req.url}`));
-    }
-    catch(err){
-       console.log(("err in app.js 51"))
-    }
-})
+// app.use('/', (req,res) => {
+//     try{
+//        console.log("url", req.url);
+//        res.sendFile(path.join(__dirname,`frontend/${req.url}`));
+//     }
+//     catch(err){
+//        console.log(("err in app.js 51"))
+//     }
+// })
 
 
 
