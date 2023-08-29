@@ -39,7 +39,7 @@ const morgan = require("morgan");
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(cors());
-app.use(helmet());
+// app.use(helmet());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());  //this is for handling jsons
