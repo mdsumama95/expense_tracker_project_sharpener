@@ -10,7 +10,7 @@ function signup(e) {
 
   }
   console.log(signupDetails)
-  axios.post('http://localhost:3000/user/signup',signupDetails).then(response => {
+  axios.post('http://16.170.241.231:3000/user/signup',signupDetails).then(response => {
     console.log(response);
       if(response.status === 201){
           window.location.href = "../html/login.html"  // change the page on successful login

@@ -12,7 +12,7 @@ function addNewExpense(e){
 
     }
     console.log(expenseDetails)
-    axios.post('http://localhost:3000/user/addExpense',expenseDetails, { headers: {"Authorization" : token} }).then((response) => {
+    axios.post('http://16.170.241.231:3000/user/addExpense',expenseDetails, { headers: {"Authorization" : token} }).then((response) => {
 
     if(response.status === 201){
         addNewExpensetoUI(response.data.expense);
@@ -26,7 +26,7 @@ function addNewExpense(e){
 }
 window.addEventListener('load', async () => {
     try {
-      const response = await axios.get('http://localhost:3000/user/getexpenses', {
+      const response = await axios.get('http://16.170.241.231:3000/user/getexpenses', {
         headers: { "Authorization": token }
       });
       if (response.status === 200) {
@@ -185,7 +185,7 @@ function initializePagination(expenses) {
 // my pagination end
 async function deleteExpense(e,expenseid) {
     try {
-        const response = await axios.delete(`http://localhost:3000/user/deleteExpense/${expenseid}`, { headers: { "Authorization": token } });
+        const response = await axios.delete(`http://16.170.241.231:3000/user/deleteExpense/${expenseid}`, { headers: { "Authorization": token } });
 
         if (response.status === 200) {
             removeExpensefromUI(expenseid);
@@ -220,7 +220,7 @@ function removeExpensefromUI(expenseid){
     document.getElementById(expenseElemId).remove();
 }
 function download(){
-    axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+    axios.get('http://16.170.241.231:3000/user/download', { headers: {"Authorization" : token} })
     .then((response) => {
         if(response.status === 201){
             //the bcakend is essentially sending a download link
@@ -240,7 +240,7 @@ function download(){
 }
 
 document.getElementById('rzp-button1').onclick = async function (e) {
-    const response  = await axios.get('http://localhost:3000/purchase/premiumMemberShip', { headers: {"Authorization" : token} });
+    const response  = await axios.get('http://16.170.241.231:3000/purchase/premiumMemberShip', { headers: {"Authorization" : token} });
     console.log(response);
     var options =
     {
@@ -259,7 +259,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
 
      "handler": function (response) {
          console.log(response);
-         axios.post('http://localhost:3000/purchase/updateTransactionStatus',{
+         axios.post('http://16.170.241.231:3000/purchase/updateTransactionStatus',{
              order_id: options.order_id,
              payment_id: response.razorpay_payment_id,
          }, { headers: {"Authorization" : token} }).then(() => {
