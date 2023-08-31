@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const express = require('express');
 var cors = require('cors')
 const fs = require("fs");
-const helmet = require('helmet');
+
 const axios = require('axios')
 
 const sequelize = require('./util/database');
@@ -77,6 +77,7 @@ Order.belongsTo(User);
 User.hasMany(Forgotpassword);
 Forgotpassword.belongsTo(User);
 
+
 sequelize.sync()
     .then(() => {
         app.listen(3000);
@@ -84,3 +85,5 @@ sequelize.sync()
     .catch(err => {
         console.log(err);
     })
+
+
