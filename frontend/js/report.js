@@ -1,7 +1,7 @@
 const token = localStorage.getItem('token');
 
 window.addEventListener('DOMContentLoaded',()=>{
-    axios.get("http://localhost:3000/premium/getReport", {headers:{"Authorization":token}})
+    axios.get("http://16.170.241.231:3000/premium/getReport", {headers:{"Authorization":token}})
     .then(result=>{
       const dailyExpense = document.getElementById('dailyExpense');
 let container = "";
@@ -51,7 +51,7 @@ dailyExpense.innerHTML = table;
     //     dailyExpense.innerHTML = container;
     // })
 
-        axios.get("http://localhost:3000/premium/getWeeklyReport", {headers:{"Authorization":token}})
+        axios.get("http://16.170.241.231:3000/premium/getWeeklyReport", {headers:{"Authorization":token}})
         .then(result=>{
             console.log(result)
             const WeeklyExpense = document.getElementById('weeklyExpense');

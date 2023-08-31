@@ -60,7 +60,7 @@ exports.sendMail = async (req, res) => {
       subject: "Expense Tracker Reset Password",
       textContent: "Link Below",
       htmlContent: `<h3>Sharpener expense project  reset the password. Here is the link below >>></h3>
-      <a href="http://localhost:3000/password/resetPasswordPage/{{params.requestId}}"> Click Here</a>`,
+      <a href="http://16.170.241.231:3000/password/resetPasswordPage/{{params.requestId}}"> Click Here</a>`,
       params: {
         requestId: requestId,       
       },

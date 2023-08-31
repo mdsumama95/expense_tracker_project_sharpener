@@ -4,7 +4,7 @@ async function updatePassword() {
     const newPassword = document.getElementById("Password1").value;
     console.log(newPassword);
     const res = await axios.post( 
-      "http://localhost:3000/password/resetPassword",          // resetPassword
+      "http://16.170.241.231:3000/password/resetPassword",          // resetPassword
       {   
         password: newPassword,
       }
@@ -27,7 +27,7 @@ async function updatePassword(e) {
   const newPassword = document.getElementById("bda").value;
   console.log(newPassword);
   const res = await axios.post( 
-    "http://localhost:3000/password/updatePassword", 
+    "http://16.170.241.231:3000/password/updatePassword", 
     {   
       password: newPassword,
     }

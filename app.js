@@ -55,15 +55,7 @@ app.use("/premium", premiumFeatureRoutes);
 app.use("/expenseHome", expenseRouter);
 app.use("/user", expenseRouter);
 
-// app.use('/', (req,res) => {
-//     try{
-//        console.log("url", req.url);
-//        res.sendFile(path.join(__dirname,`frontend/${req.url}`));
-//     }
-//     catch(err){
-//        console.log(("err in app.js 51"))
-//     }
-// })
+//
 
 
 

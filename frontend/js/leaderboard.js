@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded',() =>{
     const token = localStorage.getItem('token')
-    axios.get("http://localhost:3000/premium/getAllUsers",{ headers: {"Authorization" : token} })
+    axios.get("http://16.170.241.231:3000/premium/getAllUsers",{ headers: {"Authorization" : token} })
     .then(result =>{
         console.log(result.data.data)
         const leaderboard = document.getElementById('lb');
@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded',() =>{
 })
 async function getExpenses(id) {
     try {
-        const response = await axios.get(`http://localhost:3000/premium/getAllExpenses/${id}`);
+        const response = await axios.get(`http://16.170.241.231:3000/premium/getAllExpenses/${id}`);
         console.log(response);
         let details = document.getElementById('details');
         let container = "";
